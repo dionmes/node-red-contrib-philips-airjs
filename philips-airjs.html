@@ -1,0 +1,26 @@
+<script type="text/javascript">
+    RED.nodes.registerType('philips-airjs',{
+        category: 'function',
+        color: '#ff7f00',
+        defaults: {
+            name: {value:"philips-airjs"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "philips-airjs.svg",
+        label: function() {
+            return this.name||"philips-airjs";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="philips-airjs">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> IP/Host </label>
+        <input type="text" id="node-input-host" placeholder="IP of Air purififier">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="philips-airjs">
+    <p>Node for Philips Air purifier in js</p>
+</script>
