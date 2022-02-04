@@ -1,11 +1,8 @@
 {
   "name": "node-red-contrib-philips-airjs",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "NodeRed node for Philips Air purifier in js.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dionmes/node-red-contrib-philips-airjs.git"
@@ -20,5 +17,15 @@
   "bugs": {
     "url": "https://github.com/dionmes/node-red-contrib-philips-airjs/issues"
   },
-  "homepage": "https://github.com/dionmes/node-red-contrib-philips-airjs#readme"
+  "homepage": "https://github.com/dionmes/node-red-contrib-philips-airjs#readme",
+  "node-red": {
+    "nodes": {
+      "philips-airjs": "philips-airjs.js"
+    }
+  },
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "node-coap-client": "^2.0.2",
+    "pkcs7": "^1.0.4"
+  }
 }

@@ -15,7 +15,7 @@ const pkcs7 = require('pkcs7');
 
 const util = require('util');
 
-const ip = '192.168.133.224';
+const ip = '192.168.133.226';
 const port = '5683'
 const SECRET_KEY = "JiangPan";
 
@@ -32,6 +32,21 @@ var urlprefix = "coap://" + ip + ":" + port;
 // Main loop
 //
 //
+var connected = false;
+
+coap.tryToConnect(urlprefix + statuspath)
+.then((result) => {
+	connected = true;
+	console.log("Connected");
+}).catch( err => {
+	connected = false;
+	console.log("Not Connected");
+});  
+
+
+console.log("Status " + connected);
+
+/**
 syncDevice().then( () => {
 		console.log("Observing")
 		coap.observe(url = urlprefix + statuspath, method = "get", gotResponse, "", options = {keepAlive: false, confirmable: false});	
@@ -44,6 +59,7 @@ setTimeout(function() {
 	console.log("Time is now!");
 	sendCommand("!");
 }, 2000);
+**/
 
 //
 // function syncDevice()
@@ -222,6 +238,10 @@ function parseResponse(data) {
 	return JSON.parse(data);
 }
 
+//
+// function increaseCounter()
+// Increase counter and convert back to hex big endian.
+// 
 function increaseCounter() {
 
 	var inbuffer = Buffer.from(msgCounter, 'hex');
