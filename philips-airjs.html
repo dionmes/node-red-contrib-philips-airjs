@@ -1,41 +1,26 @@
 <script type="text/javascript">
     RED.nodes.registerType('philips-airjs',{
-        category: 'devices',
+        category: 'function',
         color: '#ff7f00',
         defaults: {
-            name: {value:'philips-airjs'},
-            host: {value: "", validate:RED.validators.required }
+            name: {value:"philips-airjs"}
         },
         inputs:1,
         outputs:1,
-        align: 'right',
-        label: 'philips-airjs',
-        icon: 'philips-airjs.svg'
+        icon: "philips-airjs.svg",
+        label: function() {
+            return this.name||"philips-airjs";
+        }
     });
 </script>
 
 <script type="text/html" data-template-name="philips-airjs">
     <div class="form-row">
-        <label for="node-input-host"><i class="fa fa-tag"></i> IP/Host </label>
-        <input type="text" id="node-input-host" placeholder="IP or hostname of Air purififier">
+        <label for="node-input-name"><i class="fa fa-tag"></i> IP/Host </label>
+        <input type="text" id="node-input-host" placeholder="IP of Air purififier">
     </div>
 </script>
 
 <script type="text/html" data-help-name="philips-airjs">
-    <p>Node for Philips Air purifier in js.<br><br>
-    In the IP/Host property of the node put in the IP address or Hostname to connect to the air purifier.<br>
-    <h3>Status</H3>
-    The Node will observe and receive status message with all the current state information from the device. The output 
-    of these message is in JSON format with topic 'status', content will depend on your device type.<br>
-    Sometimes it make take a while to get a status message. Using the CleanAir app will usually trigger a status update.<br>
-    <br>
-	</p>
-	<h3>Commands</H3>
-	The input of the node accepts two type of commands.<br>
-	<b>Node control commands</b> : 'Observe' and 'Stop'. These will start and stop observing the device.<br>
-	<br>
-	<b>Device control commands</b> : These are device specific commands.<br>
-	If succesful a message will be sent to the output with topic 'command' and payload {"status":"success"}
-	(This means that the command has been received by the device, not that it is executed. An incompatible or not understood command can still have status of success).<br>
-	In case of failure the payload will be an error message.
+    <p>Node for Philips Air purifier in js</p>
 </script>
