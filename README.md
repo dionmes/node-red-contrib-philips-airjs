@@ -27,6 +27,8 @@ The input of the node accepts two type of commands.
 ### Device control commands
 These are device specific commands.
 
+Format: key value (example: pwr 0 is off).
+
 If succesful a message will be sent to the output with topic 'command' and payload {"status":"success"}
 (This means that the command has been received by the device, not that it is executed. An incompatible or not understood command can still have status of success).<br>
 In case of failure the payload will be an error message.
@@ -55,7 +57,8 @@ Buttons light: ON, Off
 > uil 1,
 > uil 0
 
-Other devices might have more commands. Sometimes it is possible you first need to set manual before adjusting fan speed.
+Other devices might have more and other commands. 
+For some devices you first need to set manual before adjusting fan speed.
 
 ## Status
 The output json object is also device specific. Here are some of the outputs I use.
