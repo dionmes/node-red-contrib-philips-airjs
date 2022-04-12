@@ -156,10 +156,15 @@ module.exports = function(RED) {
 		//
 		function receiveCommand(node, send, msg) {
 						
-			var command = msg.payload;
+			try {
+				var command = msg.payload.toString();			
+			} catch(error) {
+				node.error("Command not recognized. ");
+				return;			
+			}
 			
 			// AirJS commands
-			if ( msg.payload.toUpperCase() == "OBSERVE" ) {
+			if ( command.toUpperCase() == "OBSERVE" ) {
 				
 				observe = true;
 
@@ -168,7 +173,7 @@ module.exports = function(RED) {
 				
 				return;	
 				
-			} else if ( msg.payload.toUpperCase() == "STOP" ) {
+			} else if ( command.toUpperCase() == "STOP" ) {
 				
 				observe = false;
 				coap.stopObserving(urlprefix + statuspath);
@@ -178,7 +183,7 @@ module.exports = function(RED) {
 			} 
 			
 			// Device commands
-			sendDeviceCommand(msg.payload);
+			sendDeviceCommand(command);
 		};
 		
 		//
