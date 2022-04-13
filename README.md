@@ -7,7 +7,7 @@ This is a node for Node-Red to view the status and send commands to some Philips
 It is based on project by @biemond (https://github.com/biemond/com.athom.philipsair.git )
 and @betaboon ( https://github.com/betaboon/aioairctrl.git ).
 
-Previous support in NodeRed for COAP based Philips Air purifiers is done via nodes that bridge 'aioairctrl' and this are not native JS implementations, they use Python.
+Previous support in NodeRed for COAP based Philips Air purifiers is done via nodes that bridge 'aioairctrl' and these are not native JS implementations, they use Python.
 
 # Configuration
 
