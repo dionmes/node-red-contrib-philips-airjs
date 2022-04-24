@@ -3,15 +3,15 @@ NodeRed node for Philips Air purifier in js.
 
 # What is AirJS ?
 
-This is a node for Node-Red to view the status and send commands to some Philips Air purifiers that use the COAP protocol.
-It is based on project by @biemond (https://github.com/biemond/com.athom.philipsair.git )
+This is a node for Node-Red to view the status and send commands to Philips Air purifiers that use the COAP protocol (Encrypted).
+It is based on work by @biemond ( https://github.com/biemond/com.athom.philipsair.git )
 and @betaboon ( https://github.com/betaboon/aioairctrl.git ).
 
-Previous support in NodeRed for COAP based Philips Air purifiers is done via nodes that bridge 'aioairctrl' and these are not native JS implementations, they use Python.
+There are other nodes in NodeRed for COAP based Philips Air purifiers but these use Python and bridge 'aioairctrl', so are not native JS implementations.
 
 # Configuration
 
-In the IP/Host property of the node put in the IP address or Hostname to connect to the air purifier.
+In the IP/Host property of the node enter the IP address or Hostname of the air purifier.
 
 # Usage
 
@@ -27,7 +27,7 @@ The input of the node accepts two type of commands.
 ### Device control commands
 These are device specific commands.
 
-Format: key value (example: pwr 0 is off).
+Format: *key* *value* (example: *pwr 0* switches the device off).
 
 If succesful a message will be sent to the output with topic 'command' and payload {"status":"success"}
 (This means that the command has been received by the device, not that it is executed. An incompatible or not understood command can still have status of success).<br>
@@ -58,7 +58,7 @@ Buttons light: ON, Off
 > uil 0
 
 Other devices might have more and other commands. 
-For some devices you first need to set manual before adjusting fan speed.
+For some devices you first need to set the device to manual before adjusting fan speed.
 
 ## Status
 The output json object is also device specific. Here are some of the outputs I use.
