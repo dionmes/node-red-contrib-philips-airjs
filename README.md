@@ -63,20 +63,20 @@ For some devices you first need to set the device to manual before adjusting fan
 ## Status
 The output json object is also device specific. Here are some of the outputs I use.
 
-om - Fan speed
-pwr - Power
-cl - Child loc
-aqil - Light brightness: 100
-uil -Buttons light
-mode - Mode
-pm25 - PM25
-iaql - Allergen
-tvoc - tvoc
-fltt1 - HEPA filter type
-fltt2 - Active carbon filter
-fltsts0 - Pre-filter and Wick: clean in ? hours
-fltsts1 - HEPA filter: replace in ? hours
-fltsts2 - Active carbon filter: replace in ? hours
+om - Fan speed  
+pwr - Power  
+cl - Child loc  
+aqil - Light brightness: 100  
+uil -Buttons light  
+mode - Mode  
+pm25 - PM25  
+iaql - Allergen  
+tvoc - tvoc  
+fltt1 - HEPA filter type  
+fltt2 - Active carbon filter  
+fltsts0 - Pre-filter and Wick: clean in ? hours  
+fltsts1 - HEPA filter: replace in ? hours  
+fltsts2 - Active carbon filter: replace in ? hours  
 
 ## Compatibility
 The node has been tested on an AC3039. 
