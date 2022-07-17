@@ -200,16 +200,16 @@ module.exports = function(RED) {
 				return;
 			}
 			
-			const command = commandArray[0]; 
-			var commandValue = commandArray[1];
+			const command = commandArray[0].toLowerCase(); 
+			var commandValue = commandArray[1].toLowerCase();
 
 			// Parse boolean string to boolean
-			if (commandValue.toUpperCase() == "FALSE" || commandValue.toUpperCase() == "TRUE" ) {
-				commandValue = (commandValue.toUpperCase() == "TRUE") ? commandValue = true : false;
+			if (commandValue == "false" || commandValue == "true" ) {
+				commandValue = (commandValue == "true") ? commandValue = true : false;
 			}
 			                        
-			if (command == "aqil" | command == "rhset" | command = "dt") {
-				commandValue = parseInt(commandValue, 10);
+			if (command == "aqil" || command == "rhset" || command = "dt") {
+				commandValue = parseInt(commandValue);
 			}
 
 			// Create command message
