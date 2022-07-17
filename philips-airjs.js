@@ -206,11 +206,11 @@ module.exports = function(RED) {
 			// Parse boolean string to boolean
 			if (commandValue.toUpperCase() == "FALSE" || commandValue.toUpperCase() == "TRUE" ) {
 				commandValue = (commandValue.toUpperCase() == "TRUE") ? commandValue = true : false;
-			}
-			                        
-			if (command == "aqil" | command == "rhset" | command = "dt") {
-				commandValue = parseInt(commandValue, 10);
-			}
+			}			                        
+
+                        if ( command == "aqil" || command == "rhset" || command == "dt" ) {
+                                commandValue = parseInt(commandValue, 10);
+                        }
 
 			// Create command message
 			var message = { state: { desired: { CommandType: 'app', DeviceId: '', EnduserId: '1' } } };
