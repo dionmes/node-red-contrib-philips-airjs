@@ -207,7 +207,11 @@ module.exports = function(RED) {
 			if (commandValue.toUpperCase() == "FALSE" || commandValue.toUpperCase() == "TRUE" ) {
 				commandValue = (commandValue.toUpperCase() == "TRUE") ? commandValue = true : false;
 			}
-			
+			                        
+			if (command == "aqil" | command == "rhset" | command = "dt") {
+				commandValue = parseInt(commandValue, 10);
+			}
+
 			// Create command message
 			var message = { state: { desired: { CommandType: 'app', DeviceId: '', EnduserId: '1' } } };
 			message.state.desired[command] = commandValue;
