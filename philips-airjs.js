@@ -207,8 +207,8 @@ module.exports = function(RED) {
 			if (commandValue == "false" || commandValue == "true" ) {
 				commandValue = (commandValue == "true") ? commandValue = true : false;
 			}
-			                        
-			if (command == "aqil" || command == "rhset" || command = "dt") {
+
+			if ( command == "aqil" || command == "rhset" || command == "dt") {
 				commandValue = parseInt(commandValue);
 			}
 
