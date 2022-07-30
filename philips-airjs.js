@@ -208,6 +208,10 @@ module.exports = function(RED) {
 				commandValue = (commandValue == "true") ? commandValue = true : false;
 			}
 
+			if ( command == "mode" || command == "func" ) {
+				commandValue = commandValue.toUpperCase();
+			}
+
 			if ( command == "aqil" || command == "rhset" || command == "dt") {
 				commandValue = parseInt(commandValue);
 			}
