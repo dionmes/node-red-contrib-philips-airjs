@@ -15,14 +15,15 @@ module.exports = function(RED) {
 		const syncpath = '/sys/dev/sync';
 		const controlpath = '/sys/dev/control';
 
+        RED.nodes.createNode(this,config);
+        
 		var urlprefix;
 		var msgCounter = "";
     	var observe = true;
     	
-        RED.nodes.createNode(this,config);
-        
         var node = this;
-	    node.trace("Airjs node started.");
+        
+	    node.log("Airjs node started.");
 	    
         node.host = config.host;
         
@@ -127,7 +128,7 @@ module.exports = function(RED) {
 				coap.request(url = urlprefix + syncpath, method = "post", payload = Buffer.from(token,'utf-8'), options = {keepAlive: true, confirmable: true, retransmit: true})
 				.then( response => {
 				
-					node.trace("Airjs sync response received");
+					node.log("Airjs sync response received");
 
 					try {		
 						msgCounter = response.payload.toString('utf-8');
@@ -155,9 +156,9 @@ module.exports = function(RED) {
 		// Handle commands received on node input.
 		//
 		function receiveCommand(node, send, msg) {
-						
+
 			try {
-				var command = msg.payload.toString();			
+				var command = msg.payload.toString();
 			} catch(error) {
 				node.error("Command not recognized. ");
 				return;			
