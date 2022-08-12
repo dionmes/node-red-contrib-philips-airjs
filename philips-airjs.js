@@ -1,6 +1,6 @@
 module.exports = function(RED) {
 
-    function AirPurifierNode(config) {
+	function AirPurifierNode(config) {
 
 		const coap = require("node-coap-client").CoapClient;
 
@@ -15,19 +15,19 @@ module.exports = function(RED) {
 		const syncpath = '/sys/dev/sync';
 		const controlpath = '/sys/dev/control';
 
-        RED.nodes.createNode(this,config);
-        
+		RED.nodes.createNode(this,config);
+		
 		var urlprefix;
 		var msgCounter = "";
-    	var observe = true;
-    	
-        var node = this;
-        
-	    node.log("Airjs node started.");
-	    
-        node.host = config.host;
-        
-        if (node.host !== "") {
+		var observe = true;
+		
+		var node = this;
+		
+		node.log("Airjs node started.");
+		
+		node.host = config.host;
+		
+		if (node.host !== "") {
 
 			var urlprefix = "coap://" + node.host + ":" + port;
 			
@@ -51,10 +51,10 @@ module.exports = function(RED) {
 				coap.reset(urlprefix);
 			});
 
-        } else {
-	        node.error("IP/Host address not configured.");
-        	node.status({fill:"red",shape:"dot",text:"disconnected"});
-        }
+		} else {
+			node.error("IP/Host address not configured.");
+			node.status({fill:"red",shape:"dot",text:"disconnected"});
+		}
 
 		//
 		// Function syncAndObserve()
@@ -99,7 +99,7 @@ module.exports = function(RED) {
 			const unencryptedResponse = decryptPayload(response);
 
 			if (unencryptedResponse !== "") {
-				const jsonstring = unencryptedResponse.replace(/[\u0000-\u0019]+/g,""); 	
+				const jsonstring = unencryptedResponse.replace(/[\u0000-\u0019]+/g,"");		
 				const json = JSON.parse(jsonstring);
 			
 				const msg = { topic: "status", payload: json.state.reported};
@@ -143,8 +143,8 @@ module.exports = function(RED) {
 
 					msgCounter = "";
 					
-					node.error("Airjs could not sync. : " + err);
-		        	node.status({fill:"red",shape:"dot",text:"disconnected"});
+					node.error("Disconnected, Airjs could not sync. : " + err);
+					node.status({fill:"red",shape:"dot",text:"disconnected"});
 
 					reject("Sync request failed.");
 				})
@@ -172,13 +172,13 @@ module.exports = function(RED) {
 				// Connect and observe
 				syncAndObserve();
 				
-				return;	
+				return; 
 				
 			} else if ( command.toUpperCase() == "STOP" ) {
 				
 				observe = false;
 				coap.stopObserving(urlprefix + statuspath);
-				node.status({fill:"yellow",shape:"ring",text:"Not observing"});	
+				node.status({fill:"yellow",shape:"ring",text:"Not observing"}); 
 				
 				return;
 			} 
@@ -257,7 +257,7 @@ module.exports = function(RED) {
 					node.send(msg);
 
 					syncAndObserve();
-				});         
+				});			
 
 			})
 			.catch( err => {
@@ -342,7 +342,7 @@ module.exports = function(RED) {
 			return
 		}
 
-    }
-    
-    RED.nodes.registerType("philips-airjs",AirPurifierNode);
+	}
+	
+	RED.nodes.registerType("philips-airjs",AirPurifierNode);
 }
