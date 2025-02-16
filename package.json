@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-philips-airjs",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "NodeRed node for Philips Air purifier in js.",
   "main": "index.js",
   "repository": {
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "aes-js": "^3.1.2",
-    "node-coap-client": "^2.1.0",
+    "node-coap-client": "^2.0.2",
     "pkcs7": "^1.0.4"
   }
 }
