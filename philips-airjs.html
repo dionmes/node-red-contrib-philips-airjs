@@ -4,7 +4,8 @@
         color: '#ff7f00',
         defaults: {
             name: {value:'philips-airjs'},
-            host: {value: "", required:true }
+            host: {value: "", required:true },
+            timeout: {value: "500", required:true }
         },
         inputs:1,
         outputs:1,
@@ -18,12 +19,16 @@
     <div class="form-row">
         <label for="node-input-host"><i class="fa fa-tag"></i> IP/Host </label>
         <input type="text" id="node-input-host" placeholder="IP or hostname of Air purififier">
+        <label for="node-input-timeout"><i class="fa fa-tag"></i> Timeout </label>
+		<input type="number" id="node-input-timeout" min="60" max="3600">
     </div>
 </script>
 
 <script type="text/html" data-help-name="philips-airjs">
-    <p>Node for Philips Air purifier in js.<br><br>
+    <p>Node for Philips Air purifier in js.</p>
     In the IP/Host property of the node put in the IP address or Hostname to connect to the air purifier.<br>
+    In the timeout field put the number of seconds the device will reconnect if no message has been received (60-3600)
+    
     <h3>Status</H3>
     The Node will observe and receive status message with all the current state information from the device. The output 
     of these message is in JSON format with topic 'status', content will depend on your device type.<br>
@@ -31,8 +36,6 @@
     <br>
 	</p>
 	<h3>Commands</H3>
-	The input of the node accepts two type of commands.<br>
-	<b>Node control commands</b> : 'Observe' and 'Stop'. These will start and stop observing the device.<br>
 	<br>
 	<b>Device control commands</b> : These are device specific commands.<br>
 	If succesful a message will be sent to the output with topic 'command' and payload {"status":"success"}<br>

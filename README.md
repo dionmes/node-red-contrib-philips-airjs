@@ -12,17 +12,18 @@ There are other nodes in NodeRed for COAP based Philips Air purifiers but these 
 # Configuration
 
 In the IP/Host property of the node enter the IP address or Hostname of the air purifier.
+In the timeout property of the node enter the timeout (optional), default is 500 seconds. 
+When not receiving a response from the device within this timeout, the node will to reconnect.
 
 # Usage
 
 The Node will observe and receive status message with all the current state information from the device. The output 
 of these message is in JSON format with topic 'status', content will depend on your device type.
 
+From version 0.4.0 the node will always go in observe mode with the ability to disable it.
+
 ## Commands
 The input of the node accepts two type of commands.
-
-### Node control commands
-'Observe' and 'Stop'. These will start and stop observing the device.
 
 ### Device control commands
 These are device specific commands.

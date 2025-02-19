@@ -20,28 +20,28 @@ module.exports = function(RED) {
 		var urlprefix;
 		var msgCounter = "";
 		var should_observe = true;
+		var connected = false; // Connected means it is in an observing state.
+		var timeout_timer = 0;
 		
-		var node = this;
-		
-		node.log("Airjs node started.");
-		
+	
+		var timeout_connection = config.timeout || 500;
+		var node = this;	
 		node.host = config.host;
 		
 		if (node.host !== "") {
 
 			var urlprefix = "coap://" + node.host + ":" + port;
 			
-			// Connect and observe
-			// Sync device to connect
-			syncDevice().catch( err => {
-				node.error("AirJS sync failed. - " + err);
-			});
-			 
+			// Connect and keep connected
+			connectDevice();
+			setInterval(() => { connectDevice(); }, 60000);
+	
+			node.log("Airjs node started.");
+	
 			// Register input events
 			node.on('input', (msg, send, done) => {
 				// Handle command
-				receiveCommand(node, send,msg);
-
+				commandReceived(node, send,msg);
 				// Node red done
 				if (done) { done(); }
 			});
@@ -60,11 +60,31 @@ module.exports = function(RED) {
 		}
 		
 		//
+		// function keepConnected()
+		//
+		// Stay connected function
+		//
+		function connectDevice() {
+			
+			if (!connected || (Math.floor(Date.now() / 1000 - timeout_timer ) > timeout_connection)) {
+			
+				syncDevice()
+				.then( () => {
+					node.log("AirJs. Synced.");
+					observe();
+				})
+				.catch( err => {
+					node.status({fill:"red",shape:"dot",text:"No connection"});
+				});		
+			}
+		}
+
+		//
 		// function syncDevice()
 		//
 		// Sync device
 		//
-		function syncDevice(){
+		function syncDevice() {
 			
 			return new Promise( (resolve, reject) => {
 		
@@ -79,30 +99,20 @@ module.exports = function(RED) {
 				coap.request(url = urlprefix + syncpath, method = "post", payload = Buffer.from(token,'utf-8'), options = {keepAlive: true, confirmable: true, retransmit: true})
 				.then( response => {
 				
-					node.log("Airjs sync response received");
-
 					try {		
 						msgCounter = response.payload.toString('utf-8');
 					} catch (err) {
 						node.error("Airjs msg counter corrupt. : " + err);
-						node.status({fill:"red",shape:"dot",text:"disconnected"});
 						reject("Sync request failed, msg counter error.");
-					}
-			
-					if (should_observe) {
-						observe();
-					}
-
+					}			
 					resolve();
 				})
 				.catch( err => {
-
 					msgCounter = "";
-					
-					node.error("Disconnected, Airjs could not sync. : " + err);
-					node.status({fill:"red",shape:"dot",text:"disconnected"});
-
+					connected = false;
+					node.error("Airjs. Connection / Sync error : " + err);
 					reject("Sync request failed.");
+					
 				})
 			 })
 		}
@@ -116,12 +126,18 @@ module.exports = function(RED) {
 			coap.observe(
 				url = urlprefix + statuspath, 
 				method = "get", gotObserveResponse, "",
-				options = {keepAlive: true, confirmable: false}
+				options = {keepAlive: true, confirmable: false, retransmit: true}
+
 			).then ( () => {
-				node.status({fill:"green",shape:"dot",text:"Observing"});
+				node.log("AirJS. Observing");
+				timeout_timer = Math.floor(Date.now() / 1000);
+				node.status({fill:"green",shape:"dot",text:"Connected"});	
+				connected = true;
 			})
 			.catch( () => {
-				node.status({fill:"red",shape:"circle",text:"Error observing"});
+				node.error("AirJS. Observe error");
+				node.status({fill:"red",shape:"dot",text:"No connection"});
+				connected = false;
 			});		
 		}
 		
@@ -140,60 +156,36 @@ module.exports = function(RED) {
 			if (unencryptedResponse !== "") {
 				const jsonstring = unencryptedResponse.replace(/[\u0000-\u0019]+/g,"");		
 				const json = JSON.parse(jsonstring);
-			
 				const msg = { topic: "status", payload: json.state.reported};
-			
 				node.send(msg);
 			}
+			
+			timeout_timer = Math.floor(Date.now() / 1000);
 		}
 
-
 		//
-		// function receiveCommand(node, msg)
+		// function commandReceived(node, msg)
 		// Handle commands received on node input.
 		//
-		function receiveCommand(node, send, msg) {
+		function commandReceived(node, send, msg) {
 
 			try {
-				var command = msg.payload.toString();
+				var fullcommand = msg.payload.toString();
 			} catch(error) {
 				node.error("Command not recognized. ");
 				return;			
 			}
-			
-			// AirJS commands
-			if ( command.toUpperCase() == "OBSERVE" ) {
-				// Observe
-				should_observe = true;
-				observe();
-				return; 
-				
-			} else if ( command.toUpperCase() == "STOP" ) {
-				should_observe = false;
-				coap.stopObserving(urlprefix + statuspath);
-				node.status({fill:"yellow",shape:"ring",text:"Not observing"}); 
-				return;
-			} 
-			
-			// Device commands
-			sendDeviceCommand(command);
-		};
-		
-		//
-		// function sendDeviceCommand(command)
-		//
-		// Send command/setting to device
-		//
-		function sendDeviceCommand(completeCommand) {
-			
-			const commandArray = completeCommand.split(' ');
+						
+			const commandArray = fullcommand.split(' ');
 			
 			if (commandArray.length !== 2 ) {
 				node.error("Command not well formatted. ");
 				return;
 			}
-			
-			const command = commandArray[0].toLowerCase(); 
+
+			node.status({fill:"blue",shape:"dot",text:"Sending command"});	
+
+			var command = commandArray[0].toLowerCase(); 
 			var commandValue = commandArray[1].toLowerCase();
 
 			// Parse boolean string to boolean
@@ -217,42 +209,39 @@ module.exports = function(RED) {
 			coap.stopObserving(urlprefix + statuspath);
 
 			// Response message
-			const msg = { topic: "command", payload: "" };
-			
-			node.status({fill:"blue",shape:"dot",text:"Sending command"});	
-			
+			msg = { topic: "command", payload: "" };
+						
 			// Sync and then send command
 			const unencryptedPayload = JSON.stringify(message);
 			const encryptedPayload = encryptPayload(unencryptedPayload);
 	
 			coap.request(url = urlprefix + controlpath, method = "post", payload = Buffer.from(encryptedPayload), options = {keepAlive: true, confirmable: true})
-			.then( response => {		
+			.then( response => {	
+				
 				if (response.payload) {
 					
 					const payload = response.payload.toString('utf-8');
 					msg.payload = payload;
 					node.send(msg);
+					node.log("AirJs. Command send.");
 					
-					node.status({fill:"blue",shape:"dot",text:"Command send"});	
-
-					if (should_observe) {
-						observe();
-					}
+					observe();
+					
 				} else {
 					
+					node.error("AirJs. Command response invalid");
 					msg.payload = {"status": "Command response invalid : " + err };
 					node.send(msg);
-					node.status({fill:"red",shape:"dot",text:"Command error"});	
-
-					if (should_observe) {
-						observe();
-					}
+					
+					observe();
 				}
 
 			}).catch( err => {
+				node.error("AirJs. Command failed to transmit");
 				msg.payload = {"status": "Command failed to transmit : " + err };
-				node.send(msg);
-				node.status({fill:"red",shape:"dot",text:"Command failed"});	
+				node.send(msg);				
+				connected = false;
+				connectDevice();
 			});			
 
 		}
